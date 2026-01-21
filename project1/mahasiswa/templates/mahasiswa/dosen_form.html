@@ -1,11 +1,11 @@
 {% extends "mahasiswa/base.html" %}
 
-{% block title %}Form Input Mahasiswa{% endblock %}
+{% block title %}Form Input Dosen{% endblock %}
 
 {% block extra_css %}
 <style>
     .stat-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         color: white;
         padding: 30px;
         border-radius: 10px;
@@ -15,7 +15,7 @@
     }
     .stat-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 8px 25px rgba(245, 87, 108, 0.4);
     }
     .stat-card .stat-number {
         font-size: 2.5rem;
@@ -30,19 +30,32 @@
         transition: all 0.3s;
     }
     .table-row-hover:hover {
-        background-color: #f0f5ff;
+        background-color: #fff5f5;
         transform: scale(1.01);
     }
-    .badge-jurusan {
+    .badge-homebase {
         padding: 8px 12px;
         border-radius: 20px;
         font-size: 0.85rem;
-        display: inline-block;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         color: white;
+        display: inline-block;
+        max-width: 140px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        cursor: help;
+        transition: all 0.3s;
     }
-    .npm-badge {
-        background-color: #667eea;
+    .badge-homebase:hover {
+        max-width: none;
+        white-space: normal;
+        word-break: break-word;
+        background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+        box-shadow: 0 2px 8px rgba(245, 87, 108, 0.3);
+    }
+    .nidn-badge {
+        background-color: #f5576c;
         color: white;
         padding: 5px 12px;
         border-radius: 20px;
@@ -54,11 +67,11 @@
         transition: all 0.3s;
     }
     .form-control:focus, .form-select:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        border-color: #f5576c;
+        box-shadow: 0 0 0 0.2rem rgba(245, 87, 108, 0.25);
     }
     .btn-submit {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         border: none;
         color: white;
         padding: 10px 30px;
@@ -68,7 +81,7 @@
     }
     .btn-submit:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
         color: white;
     }
 </style>
@@ -80,17 +93,19 @@
 <div class="row mb-4">
     <div class="col-md-12">
         <div class="stat-card">
-            <i class="fas fa-users" style="font-size: 2rem;"></i>
-            <div class="stat-number">{{ total_mahasiswa }}</div>
-            <div class="stat-label">Total Mahasiswa Terdaftar</div>
+            <i class="fas fa-chalkboard-user" style="font-size: 2rem;"></i>
+            <div class="stat-number">{{ total_dosen }}</div>
+            <div class="stat-label">Total Dosen Terdaftar</div>
         </div>
     </div>
 </div>
 
 <!-- FORM INPUT -->
 <div class="card shadow-sm mb-4">
-    <div class="card-header text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-        <h5 class="mb-0"><i class="fas fa-plus-circle"></i> Tambah Data Mahasiswa</h5>
+    <div class="card-header text-white" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+        <h5 class="mb-0">
+            <i class="fas fa-plus-circle"></i> Tambah Data Dosen
+        </h5>
     </div>
     <div class="card-body">
         <form method="POST" class="row g-3">
@@ -115,16 +130,18 @@
             {% endfor %}
 
             <div class="col-12">
-                <button class="btn btn-submit px-4" type="submit"><i class="fas fa-save"></i> Simpan Data</button>
+                <button class="btn btn-submit px-4" type="submit">
+                    <i class="fas fa-save"></i> Simpan Data
+                </button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- TABEL DATA -->
+<!-- TABEL DATA DOSEN -->
 <div class="card shadow-sm">
     <div class="card-header bg-dark text-white">
-        <h5 class="mb-0"><i class="fas fa-list"></i> Daftar Mahasiswa ({{ total_mahasiswa }} Data)</h5>
+        <h5 class="mb-0"><i class="fas fa-list"></i> Daftar Dosen ({{ total_dosen }} Data)</h5>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -132,43 +149,43 @@
                 <thead class="table-dark">
                     <tr>
                         <th width="5%">No</th>
-                        <th width="20%">Nama</th>
-                        <th width="15%">NPM</th>
-                        <th width="20%">Email</th>
-                        <th width="15%">Jurusan</th>
-                        <th width="10%">No HP</th>
-                        <th width="15%">Aksi</th>
+                        <th width="18%">Nama</th>
+                        <th width="12%">NIDN</th>
+                        <th width="18%">Email</th>
+                        <th width="12%">No HP</th>
+                        <th width="15%">Homebase</th>
+                        <th width="20%">Aksi</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    {% for m in data %}
+                    {% for dosen in dosen_list %}
                     <tr class="table-row-hover">
                         <td><strong>{{ forloop.counter }}</strong></td>
                         <td>
-                            <i class="fas fa-user-circle"></i> {{ m.nama }}
+                            <i class="fas fa-user-circle"></i> {{ dosen.nama }}
                         </td>
                         <td>
-                            <span class="npm-badge">{{ m.npm }}</span>
+                            <span class="nidn-badge">{{ dosen.nidn }}</span>
                         </td>
                         <td>
-                            <i class="fas fa-envelope text-danger"></i> {{ m.email }}
+                            <i class="fas fa-envelope text-danger"></i> {{ dosen.email }}
                         </td>
                         <td>
-                            <span class="badge-jurusan bg-light text-dark">
-                                <i class="fas fa-book"></i> {{ m.jurusan }}
+                            <i class="fas fa-phone text-success"></i> {{ dosen.no_hp }}
+                        </td>
+                        <td>
+                            <span class="badge-homebase bg-light text-dark">
+                                <i class="fas fa-building"></i> {{ dosen.homebase }}
                             </span>
-                        </td>
-                        <td>
-                            <i class="fas fa-phone text-success"></i> {{ m.nohp }}
                         </td>
 
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                <a href="{% url 'edit_mahasiswa' m.id %}" class="btn btn-warning" title="Edit">
+                                <a href="{% url 'edit_dosen' dosen.id %}" class="btn btn-warning" title="Edit">
                                     <i class="fas fa-edit"></i> Edit
                                 </a>
-                                <a href="{% url 'delete_mahasiswa' m.id %}" class="btn btn-danger" onclick="return confirm('Yakin ingin menghapus?');" title="Hapus">
+                                <a href="{% url 'delete_dosen' dosen.id %}" class="btn btn-danger" onclick="return confirm('Yakin ingin menghapus?');" title="Hapus">
                                     <i class="fas fa-trash"></i> Hapus
                                 </a>
                             </div>
@@ -178,7 +195,7 @@
                     <tr>
                         <td colspan="7" class="text-center text-muted py-5">
                             <i class="fas fa-inbox" style="font-size: 2rem;"></i>
-                            <p>Belum ada data mahasiswa. Tambahkan data baru dengan mengisi form di atas.</p>
+                            <p>Belum ada data dosen. Tambahkan data baru dengan mengisi form di atas.</p>
                         </td>
                     </tr>
                     {% endfor %}

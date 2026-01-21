@@ -1,0 +1,328 @@
+{% extends "mahasiswa/base.html" %}
+
+{% block title %}Dashboard - Sistem Manajemen Akademik{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-container {
+        min-height: 100vh;
+    }
+    .stat-box {
+        background: white;
+        border-radius: 10px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        text-align: center;
+        transition: transform 0.3s;
+    }
+    .stat-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin: 10px 0;
+    }
+    .stat-label {
+        color: #6c757d;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .stat-icon {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+    .stat-mahasiswa .stat-icon { color: #667eea; }
+    .stat-dosen .stat-icon { color: #f5576c; }
+    .stat-mk .stat-icon { color: #4facfe; }
+    
+    .chart-container {
+        position: relative;
+        height: 300px;
+        margin-bottom: 20px;
+    }
+    
+    .card-header-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .table-preview {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+    
+    .badge-custom {
+        padding: 8px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-container">
+    <!-- WELCOME HEADER -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <div class="card-body py-5">
+                    <h1 class="mb-2"><i class="fas fa-chart-line"></i> Dashboard Sistem Manajemen Akademik</h1>
+                    <p class="mb-0">Kelola data mahasiswa, dosen, dan mata kuliah dengan mudah dan efisien</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATISTIK CARDS -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="stat-box stat-mahasiswa">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-label">Total Mahasiswa</div>
+                <div class="stat-number">{{ total_mahasiswa }}</div>
+                <a href="{% url 'input_mahasiswa' %}" class="btn btn-sm btn-primary mt-3">
+                    <i class="fas fa-eye"></i> Lihat Detail
+                </a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-box stat-dosen">
+                <div class="stat-icon"><i class="fas fa-chalkboard-user"></i></div>
+                <div class="stat-label">Total Dosen</div>
+                <div class="stat-number">{{ total_dosen }}</div>
+                <a href="{% url 'input_dosen' %}" class="btn btn-sm" style="background-color: #f5576c; color: white;">
+                    <i class="fas fa-eye"></i> Lihat Detail
+                </a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-box stat-mk">
+                <div class="stat-icon"><i class="fas fa-book"></i></div>
+                <div class="stat-label">Total Mata Kuliah</div>
+                <div class="stat-number">{{ total_matakuliah }}</div>
+                <a href="{% url 'input_mk' %}" class="btn btn-sm" style="background-color: #4facfe; color: white;">
+                    <i class="fas fa-eye"></i> Lihat Detail
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHARTS ROW -->
+    <div class="row mb-4">
+        <!-- CHART 1: Mahasiswa per Jurusan -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header card-header-gradient">
+                    <h5 class="mb-0"><i class="fas fa-chart-pie"></i> Distribusi Mahasiswa per Jurusan</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="jurusanChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHART 2: Mahasiswa per Mata Kuliah -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header card-header-gradient">
+                    <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Mahasiswa per Mata Kuliah</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="mkChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DATA PREVIEW -->
+    <div class="row">
+        <!-- Mahasiswa Preview -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header card-header-gradient">
+                    <h5 class="mb-0"><i class="fas fa-users"></i> Data Mahasiswa Terbaru</h5>
+                </div>
+                <div class="card-body p-0 table-preview">
+                    <table class="table table-sm table-hover mb-0">
+                        <tbody>
+                            {% for mhs in mahasiswa_list %}
+                            <tr>
+                                <td>
+                                    <small><strong>{{ mhs.nama }}</strong></small><br>
+                                    <small class="text-muted">{{ mhs.npm }}</small>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td class="text-center text-muted py-3">
+                                    <i class="fas fa-inbox"></i> Belum ada data
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer text-center">
+                    <a href="{% url 'input_mahasiswa' %}" class="btn btn-sm btn-primary">Lihat Semua →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dosen Preview -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+                    <h5 class="mb-0"><i class="fas fa-chalkboard-user"></i> Data Dosen Terbaru</h5>
+                </div>
+                <div class="card-body p-0 table-preview">
+                    <table class="table table-sm table-hover mb-0">
+                        <tbody>
+                            {% for dosen in dosen_list %}
+                            <tr>
+                                <td>
+                                    <small><strong>{{ dosen.nama }}</strong></small><br>
+                                    <small class="text-muted">{{ dosen.nidn }}</small>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td class="text-center text-muted py-3">
+                                    <i class="fas fa-inbox"></i> Belum ada data
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer text-center">
+                    <a href="{% url 'input_dosen' %}" class="btn btn-sm" style="background-color: #f5576c; color: white;">Lihat Semua →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mata Kuliah Preview -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white;">
+                    <h5 class="mb-0"><i class="fas fa-book"></i> Data Mata Kuliah Terbaru</h5>
+                </div>
+                <div class="card-body p-0 table-preview">
+                    <table class="table table-sm table-hover mb-0">
+                        <tbody>
+                            {% for mk in matakuliah_list %}
+                            <tr>
+                                <td>
+                                    <small><strong>{{ mk.nama_mk }}</strong></small><br>
+                                    <small class="text-muted">{{ mk.kode_mk }}</small>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td class="text-center text-muted py-3">
+                                    <i class="fas fa-inbox"></i> Belum ada data
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer text-center">
+                    <a href="{% url 'input_mk' %}" class="btn btn-sm" style="background-color: #4facfe; color: white;">Lihat Semua →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<script>
+    // Data dari Django context
+    const jurusanData = {{ jurusan_counts|safe }};
+    const mkData = {{ mk_mhs_counts|safe }};
+
+    // Chart 1: Pie Chart - Mahasiswa per Jurusan
+    const jurusanCtx = document.getElementById('jurusanChart').getContext('2d');
+    const jurusanChart = new Chart(jurusanCtx, {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(jurusanData),
+            datasets: [{
+                data: Object.values(jurusanData),
+                backgroundColor: [
+                    '#667eea',
+                    '#764ba2',
+                    '#f093fb',
+                    '#f5576c',
+                    '#4facfe',
+                    '#00f2fe',
+                    '#ffa502',
+                    '#ff6b6b'
+                ],
+                borderColor: '#fff',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 15,
+                        font: { size: 12 }
+                    }
+                }
+            }
+        }
+    });
+
+    // Chart 2: Bar Chart - Mahasiswa per Mata Kuliah
+    const mkCtx = document.getElementById('mkChart').getContext('2d');
+    const mkChart = new Chart(mkCtx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(mkData),
+            datasets: [{
+                label: 'Jumlah Mahasiswa',
+                data: Object.values(mkData),
+                backgroundColor: '#4facfe',
+                borderColor: '#0d6efd',
+                borderWidth: 1,
+                borderRadius: 5
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

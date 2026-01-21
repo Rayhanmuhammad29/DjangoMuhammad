@@ -1,6 +1,6 @@
 {% extends "mahasiswa/base.html" %}
 
-{% block title %}Edit Data Mahasiswa{% endblock %}
+{% block title %}Edit Data Dosen{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -13,11 +13,11 @@
         padding: 10px 16px;
         margin: 5px 5px 5px 0;
         border-radius: 25px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         color: white;
         font-size: 0.9rem;
         font-weight: 500;
-        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+        box-shadow: 0 2px 8px rgba(245, 87, 108, 0.2);
     }
     .form-control, .form-select {
         border: 2px solid #e0e0e0;
@@ -26,15 +26,15 @@
         padding: 10px 15px;
     }
     .form-control:focus, .form-select:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        border-color: #f5576c;
+        box-shadow: 0 0 0 0.2rem rgba(245, 87, 108, 0.25);
     }
     .card-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         border: none;
     }
     .btn-submit {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         border: none;
         color: white;
         padding: 10px 30px;
@@ -44,7 +44,7 @@
     }
     .btn-submit:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
         color: white;
     }
     .btn-back {
@@ -59,19 +59,19 @@
 <div class="edit-container">
     <!-- HEADER -->
     <div class="card shadow-sm mb-4 border-0">
-        <div class="card-header bg-gradient" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+        <div class="card-header bg-gradient" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
             <div class="row align-items-center">
                 <div class="col">
-                    <h2 class="mb-0"><i class="fas fa-user-edit"></i> Edit Data Mahasiswa</h2>
+                    <h2 class="mb-0"><i class="fas fa-user-edit"></i> Edit Data Dosen</h2>
                 </div>
                 <div class="col-auto">
-                    <span class="badge bg-light text-dark">ID: {{ mhs.id }}</span>
+                    <span class="badge bg-light text-dark">ID: {{ dosen.id }}</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- INFO MAHASISWA SEBELUM EDIT -->
+    <!-- INFO DOSEN SEBELUM EDIT -->
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-light">
             <h5 class="mb-0"><i class="fas fa-info-circle"></i> Informasi Saat Ini</h5>
@@ -82,15 +82,15 @@
                     <div class="mb-3">
                         <label class="form-label text-muted">Nama</label>
                         <div class="info-badge">
-                            <i class="fas fa-user"></i> {{ mhs.nama }}
+                            <i class="fas fa-user"></i> {{ dosen.nama }}
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label class="form-label text-muted">NPM</label>
+                        <label class="form-label text-muted">NIDN</label>
                         <div class="info-badge">
-                            <i class="fas fa-id-card"></i> {{ mhs.npm }}
+                            <i class="fas fa-id-badge"></i> {{ dosen.nidn }}
                         </div>
                     </div>
                 </div>
@@ -98,7 +98,7 @@
                     <div class="mb-3">
                         <label class="form-label text-muted">Email</label>
                         <div class="info-badge">
-                            <i class="fas fa-envelope"></i> {{ mhs.email }}
+                            <i class="fas fa-envelope"></i> {{ dosen.email }}
                         </div>
                     </div>
                 </div>
@@ -106,15 +106,15 @@
                     <div class="mb-3">
                         <label class="form-label text-muted">No HP</label>
                         <div class="info-badge">
-                            <i class="fas fa-phone"></i> {{ mhs.nohp }}
+                            <i class="fas fa-phone"></i> {{ dosen.no_hp }}
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label class="form-label text-muted">Jurusan</label>
+                        <label class="form-label text-muted">Homebase</label>
                         <div class="info-badge">
-                            <i class="fas fa-graduation-cap"></i> {{ mhs.jurusan }}
+                            <i class="fas fa-building"></i> {{ dosen.homebase }}
                         </div>
                     </div>
                 </div>
@@ -122,7 +122,7 @@
                     <div class="mb-3">
                         <label class="form-label text-muted">Alamat</label>
                         <div class="info-badge">
-                            <i class="fas fa-map-marker-alt"></i> {{ mhs.alamat|default:"Tidak ada" }}
+                            <i class="fas fa-map-marker-alt"></i> {{ dosen.alamat|default:"Tidak ada" }}
                         </div>
                     </div>
                 </div>
@@ -132,7 +132,7 @@
 
     <!-- FORM EDIT -->
     <div class="card shadow-sm">
-        <div class="card-header text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="card-header text-white" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
             <h5 class="mb-0"><i class="fas fa-edit"></i> Perbarui Data</h5>
         </div>
         <div class="card-body">
@@ -158,14 +158,12 @@
                 {% endfor %}
 
                 <div class="col-12">
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-submit px-4" type="submit">
-                            <i class="fas fa-check"></i> Simpan Perubahan
-                        </button>
-                        <a href="{% url 'input_mahasiswa' %}" class="btn btn-secondary btn-back px-4">
-                            <i class="fas fa-arrow-left"></i> Kembali
-                        </a>
-                    </div>
+                    <button class="btn btn-submit px-4" type="submit">
+                        <i class="fas fa-check"></i> Simpan Perubahan
+                    </button>
+                    <a href="{% url 'input_dosen' %}" class="btn btn-secondary btn-back px-4">
+                        <i class="fas fa-arrow-left"></i> Kembali
+                    </a>
                 </div>
             </form>
         </div>
